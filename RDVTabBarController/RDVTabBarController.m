@@ -46,8 +46,36 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.view addSubview:[self contentView]];
-    [self.view addSubview:[self tabBar]];
+    UIView *contentView = [self contentView];
+    RDVTabBar *tabBar = [self tabBar];
+    
+    if (@available(iOS 11.0, *)) {
+        UILayoutGuide *layoutGuide = self.view.safeAreaLayoutGuide;
+        [self.view addLayoutGuide:layoutGuide];
+        
+        contentView.translatesAutoresizingMaskIntoConstraints = NO;
+        tabBar.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [self.view addSubview:contentView];
+        [self.view addSubview:tabBar];
+        
+        [NSLayoutConstraint activateConstraints:@[[tabBar.heightAnchor constraintEqualToConstant:50],
+                                                  [tabBar.leftAnchor constraintEqualToAnchor:layoutGuide.leftAnchor],
+                                                  [tabBar.rightAnchor constraintEqualToAnchor:layoutGuide.rightAnchor],
+                                                  [tabBar.bottomAnchor constraintEqualToAnchor:layoutGuide.bottomAnchor],
+                                                  
+                                                  [contentView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+                                                  [contentView.leftAnchor constraintEqualToAnchor:layoutGuide.leftAnchor],
+                                                  [contentView.rightAnchor constraintEqualToAnchor:layoutGuide.rightAnchor],
+                                                  [contentView.bottomAnchor constraintEqualToAnchor:tabBar.topAnchor]
+                                                  ]];
+        
+    } else {
+        // Fallback on earlier versions
+        [self.view addSubview:contentView];
+        [self.view addSubview:tabBar];
+        
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -191,6 +219,9 @@
 }
 
 - (void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated {
+     if (@available(iOS 11.0, *)) {
+        return;
+    }
     _tabBarHidden = hidden;
     
     __weak RDVTabBarController *weakSelf = self;
