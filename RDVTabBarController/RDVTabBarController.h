@@ -63,6 +63,9 @@
  */
 - (void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated;
 
+@property (nonatomic, assign) CGFloat defaultTabBarHeight; //50
+@property (nonatomic, strong) NSLayoutConstraint *tabBarHeightConstraint;
+
 @end
 
 @protocol RDVTabBarControllerDelegate <NSObject>

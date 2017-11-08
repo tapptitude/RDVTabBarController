@@ -46,6 +46,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.defaultTabBarHeight = 50;
+    
     UIView *contentView = [self contentView];
     RDVTabBar *tabBar = [self tabBar];
     
@@ -59,7 +61,8 @@
         [self.view addSubview:contentView];
         [self.view addSubview:tabBar];
         
-        [NSLayoutConstraint activateConstraints:@[[tabBar.heightAnchor constraintEqualToConstant:50],
+        self.tabBarHeightConstraint = [tabBar.heightAnchor constraintEqualToConstant:self.defaultTabBarHeight];
+        [NSLayoutConstraint activateConstraints:@[self.tabBarHeightConstraint,
                                                   [tabBar.leftAnchor constraintEqualToAnchor:layoutGuide.leftAnchor],
                                                   [tabBar.rightAnchor constraintEqualToAnchor:layoutGuide.rightAnchor],
                                                   [tabBar.bottomAnchor constraintEqualToAnchor:layoutGuide.bottomAnchor],
@@ -219,11 +222,26 @@
 }
 
 - (void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated {
-     if (@available(iOS 11.0, *)) {
+    
+    if (@available(iOS 11.0, *)) {
+        void (^block)() = ^{
+            _tabBarHidden = hidden;
+            self.tabBarHeightConstraint.constant = hidden ? 0.0 : self.defaultTabBarHeight;
+            [self.view layoutIfNeeded];
+        };
+        
+//        if (animated) {
+//            [UIView animateWithDuration:0.24 animations:^{
+//                block();
+//            } completion:nil];
+//        } else {
+            block();
+//        }
+        
         return;
     }
-    _tabBarHidden = hidden;
     
+    _tabBarHidden = hidden;
     __weak RDVTabBarController *weakSelf = self;
     
     void (^block)() = ^{
