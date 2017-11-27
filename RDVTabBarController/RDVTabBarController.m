@@ -60,17 +60,16 @@
         
         [self.view addSubview:contentView];
         [self.view addSubview:tabBar];
-        
         self.tabBarHeightConstraint = [tabBar.heightAnchor constraintEqualToConstant:self.defaultTabBarHeight];
         [NSLayoutConstraint activateConstraints:@[self.tabBarHeightConstraint,
                                                   [tabBar.leftAnchor constraintEqualToAnchor:layoutGuide.leftAnchor],
                                                   [tabBar.rightAnchor constraintEqualToAnchor:layoutGuide.rightAnchor],
-                                                  [tabBar.bottomAnchor constraintEqualToAnchor:layoutGuide.bottomAnchor],
+                                                  [tabBar.bottomAnchor constraintEqualToSystemSpacingBelowAnchor:layoutGuide.bottomAnchor multiplier:0],
                                                   
                                                   [contentView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
                                                   [contentView.leftAnchor constraintEqualToAnchor:layoutGuide.leftAnchor],
                                                   [contentView.rightAnchor constraintEqualToAnchor:layoutGuide.rightAnchor],
-                                                  [contentView.bottomAnchor constraintEqualToAnchor:tabBar.topAnchor]
+                                                  [contentView.bottomAnchor constraintEqualToSystemSpacingBelowAnchor:layoutGuide.bottomAnchor multiplier:0]
                                                   ]];
         
     } else {
@@ -222,7 +221,6 @@
 }
 
 - (void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated {
-    
     if (@available(iOS 11.0, *)) {
         void (^block)() = ^{
             _tabBarHidden = hidden;
@@ -264,6 +262,10 @@
         
         [[weakSelf tabBar] setFrame:CGRectMake(0, tabBarStartingY, viewSize.width, tabBarHeight)];
         [[weakSelf contentView] setFrame:CGRectMake(0, 0, viewSize.width, contentViewHeight)];
+        
+        if (weakSelf.tabBarHidden) {
+            weakSelf.selectedViewController.view.frame = weakSelf.view.bounds;
+        }
     };
     
     void (^completion)(BOOL) = ^(BOOL finished){
