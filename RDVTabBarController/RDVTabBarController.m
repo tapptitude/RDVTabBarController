@@ -69,7 +69,7 @@
                                                   [contentView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
                                                   [contentView.leftAnchor constraintEqualToAnchor:layoutGuide.leftAnchor],
                                                   [contentView.rightAnchor constraintEqualToAnchor:layoutGuide.rightAnchor],
-                                                  [contentView.bottomAnchor constraintEqualToSystemSpacingBelowAnchor:layoutGuide.bottomAnchor multiplier:0]
+                                                  [contentView.bottomAnchor constraintEqualToSystemSpacingBelowAnchor:tabBar.topAnchor multiplier:0]
                                                   ]];
         
     } else {
